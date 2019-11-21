@@ -1,10 +1,3 @@
-"""
-File        :
-Description :resnet 18, learn to grow
-Author      :Wang Wenjin
-Date        :2019/8/9
-Version     :v2.0
-"""
 import numpy as np
 import torch
 import torch.nn as nn
