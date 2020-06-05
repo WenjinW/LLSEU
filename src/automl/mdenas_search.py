@@ -1,3 +1,10 @@
+"""
+File        :
+Description :Multinomial distribution for efficient Neural Architecture Search
+Author      :Wang Wenjin
+Date        :2019/9/19
+Version     :v1.0
+"""
 import numpy as np
 import torch
 import logging
@@ -134,8 +141,10 @@ class AutoSearch(object):
                     'reduce': torch.reshape(h_a['reduce'][k], (1, -1)) - torch.reshape(h_a['reduce'][k], (-1, 1))
                 }
                 for cell_type in ['normal', 'reduce']:
-                    vector1 = torch.sum((dh_e_k[cell_type] < 0) * (dh_a_k[cell_type] > 0), dim=1)
-                    vector2 = torch.sum((dh_e_k[cell_type] > 0) * (dh_a_k[cell_type] < 0), dim=1)
+                    # vector1 = torch.sum((dh_e_k[cell_type] < 0) * (dh_a_k[cell_type] > 0), dim=1)
+                    vector1 = torch.sum((dh_e_k[cell_type] < 0) * (dh_a_k[cell_type] > 0), dim=0)
+                    # vector2 = torch.sum((dh_e_k[cell_type] > 0) * (dh_a_k[cell_type] < 0), dim=1)
+                    vector2 = torch.sum((dh_e_k[cell_type] > 0) * (dh_a_k[cell_type] < 0), dim=0)
                     self.model.p[cell_type][k] += (self.lr_a * (vector1-vector2).float())
                     self.model.p[cell_type][k] = F.softmax(self.model.p[cell_type][k])
 
@@ -154,6 +163,7 @@ class AutoSearch(object):
     def train(self, train_queue, selected_ops):
         objs = utils.AverageMeter()
         top1 = utils.AverageMeter()
+        # top5 = utils.AverageMeter()
 
         for step, (x, y) in enumerate(train_queue):
             self.model.train()

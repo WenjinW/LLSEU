@@ -1,0 +1,26 @@
+cd src
+python run.py --mode=search \
+            --location=local \
+            --seed=0 \
+            --experiment=pmnist \
+            --device 0 \
+            --approach=seu \
+            --id=001 \
+            --o_size=30  \
+            --model=auto \
+            --search_layers=4 \
+            --eval_layers=5 \
+            --c_epochs=100  \
+            --c_batch=512  \
+            --c_lr=0.025  \
+            --c_lr_a=0.01  \
+            --c_lamb=0.0003  \
+            --o_epochs=100  \
+            --o_batch=128  \
+            --o_lr=0.025  \
+            --o_lr_a=0.01  \
+            --o_lamb=0.0003  \
+            --epochs=50  \
+            --batch=128  \
+            --lr=0.025  \
+            --lamb=0.0003  \

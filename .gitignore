@@ -1,1 +1,12 @@
-/.idea/
+dat/
+logs/
+polyaxonfile_tensorboard.yml
+res/
+yml_files/
+.polyaxonignore
+.polyaxon
+src/__pycache__
+src/approaches/__pycache__/
+src/automl/__pycache__/
+src/dataloaders/__pycache__/
+src/models/__pycache__/

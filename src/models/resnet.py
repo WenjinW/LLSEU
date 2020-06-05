@@ -1,3 +1,10 @@
+"""
+File        :
+Description :resnet 18
+Author      :Wang Wenjin
+Date        :2019/9/1
+Version     :v1.0
+"""
 import torch
 import torch.nn as nn
 

@@ -1,11 +1,27 @@
+"""
+File        :
+Description :search model architecture by darts
+Author      :Wang Wenjin
+Date        :2019/8/16
+Version     :v1.0
+"""
+import os
+import sys
+import time
+import glob
 import numpy as np
 import torch
 import logging
+import argparse
 import torch.nn as nn
 import torch.utils
 import torch.nn.functional as F
+import torchvision.datasets as dset
+import torch.backends.cudnn as cudnn
 
 import automl.darts_utils_cnn as utils
+
+from torch.autograd import Variable
 from automl.darts_basicmodel import BasicNetwork
 from automl.darts_model import Network
 from automl.darts_architecture import Architect

@@ -1,5 +1,15 @@
+"""
+File        :
+Description :
+Author      :Wang Wenjin
+Date        :2019/8/16
+Version     :v1.0
+"""
 import torch
+import numpy as np
+import torch.nn as nn
 from copy import deepcopy
+from torch.autograd import Variable
 
 
 def _concat(xs):

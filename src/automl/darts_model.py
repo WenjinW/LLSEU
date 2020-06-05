@@ -1,8 +1,20 @@
+"""
+File        :
+Description :
+Author      :Wang Wenjin
+Date        :2019/8/17
+Version     :v1.0
+"""
 import numpy as np
-from copy import deepcopy
+import torch
+import torch.nn as nn
 
 import utils
+
+from copy import deepcopy
+
 from automl.darts_operation import *
+
 
 
 class Cell(nn.Module):
@@ -43,8 +55,13 @@ class Cell(nn.Module):
         s1 = self.preprocess1(s1)
 
         states = [s0, s1]
+        # todo: test
+        # print("num_cell: ", self._steps)
+        # print("len_indices", len(self._indices))
         for i in range(self._steps):
+            # print("idx: ", self._indices[2 * i])
             h1 = states[self._indices[2 * i]]
+            # print("idx: ", self._indices[2 * i + 1])
             h2 = states[self._indices[2 * i + 1]]
             op1 = self._ops[2 * i]
             op2 = self._ops[2 * i + 1]

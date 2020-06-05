@@ -1,3 +1,14 @@
+"""
+File        :
+Description :
+Author      :Wang Wenjin
+Date        :2019/9/19
+Version     :v1.0
+"""
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
 from copy import deepcopy
 
 from automl.darts_genotypes import PRIMITIVES
@@ -17,6 +28,7 @@ class MixedOp(nn.Module):
             self._ops.append(op)
 
     def forward(self, x, selected_op):
+        # return sum(w * op(x) for w, op in zip(weights, self._ops))
         return self._ops[selected_op](x)
 
 

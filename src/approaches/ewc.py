@@ -1,6 +1,7 @@
 import sys,time
 import numpy as np
 import torch
+from torch import nn
 from copy import deepcopy
 
 import utils
@@ -28,6 +29,7 @@ class Appr(object):
         self.lr_patience = lr_patience
         self.clipgrad = clipgrad
         self.lamb = lamb
+        # Grid search = [500,1000,2000,5000,10000,20000,50000]; best was 5000
         self.lamb_ewc = lamb_ewc
         self.ce = torch.nn.CrossEntropyLoss()
         self.optimizer = None
@@ -57,6 +59,8 @@ class Appr(object):
         lr = self.lr
         # 1 define the optimizer and scheduler
         self.optimizer = self._get_optimizer(lr)
+        # scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(self.optimizer, patience=self.lr_patience,
+        #                                                        factor=self.lr_factor, threshold=0.001)
         scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(self.optimizer, self.epochs)
         # 2 define the dataloader
         train_loader = torch.utils.data.DataLoader(

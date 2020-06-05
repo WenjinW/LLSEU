@@ -1,3 +1,4 @@
+import sys, time
 import numpy as np
 import torch
 from torch import nn
@@ -8,7 +9,8 @@ import utils
 class Appr(object):
 
     def __init__(self, model, epochs=50, batch=128, lr=0.025, lamb=3e-4,
-                 lr_min=1e-4, clipgrad=5,
+                 lr_min=1e-4, lr_factor=3, lr_patience=5,
+                 clipgrad=5,
                  writer=None, exp_name="None", device='cuda', args=None):
         self.device = device
         self.writer = writer
@@ -21,16 +23,12 @@ class Appr(object):
         self.lr = lr
         self.lamb = lamb
         self.lr_min = lr_min
+        self.lr_factor = lr_factor
+        self.lr_patience = lr_patience
         self.clipgrad = clipgrad
 
         self.criterion = nn.CrossEntropyLoss()
         self.optimizer = self._get_optimizer()
-
-        if args.mode == 'search':
-            self.epochs = args.epochs
-            self.batch = args.batch
-            self.lr = args.lr
-            self.lamb = args.lamb
 
         return
 

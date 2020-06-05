@@ -1,3 +1,10 @@
+"""
+File        :
+Description :
+Author      :Wang Wenjin
+Date        :2019/9/10
+Version     :v1.0
+"""
 import numpy as np
 import torch
 import torch.nn as nn

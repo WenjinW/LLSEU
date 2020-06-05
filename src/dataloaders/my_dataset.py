@@ -1,3 +1,10 @@
+"""
+File        :
+Description :
+Author      :Wang Wenjin
+Date        :2019/11/1
+Version     :v1.0
+"""
 import torch
 import torch.utils.data
 from torchvision import datasets

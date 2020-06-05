@@ -1,3 +1,10 @@
+"""
+File        :
+Description :Approach: new method
+Author      :Wang Wenjin
+Date        :2019/8/13
+Version     :v1.0
+"""
 import numpy as np
 import torch
 import torch.nn.functional as F
@@ -15,8 +22,8 @@ from automl.darts_genotypes import mdenas_pmnist, mdenas_mixture
 class Appr(object):
     """ Class implementing the new approach """
     def __init__(self, input_size=None, taskcla=None,
-                 c_epochs=100, c_batch=512, c_lr=0.025, c_lr_a=0.01, c_lamb=3e-4,
-                 o_epochs=100, o_batch=512, o_lr=0.025, o_lr_a=0.01, o_lamb=3e-4,
+                 c_epochs=100, c_batch=512, c_lr=0.025, c_lr_a=0.01, c_lamb=3e-4, c_lr_min=1e-3,
+                 o_epochs=100, o_batch=512, o_lr=0.025, o_lr_a=0.01, o_lamb=3e-4, o_size=1, o_lr_min=1e-3,
                  epochs=20, batch=128,  lr=0.025, lamb=3e-4,
                  lr_factor=3, lr_patience=5, clipgrad=5,
                  writer=None, exp_name="None", device='cuda', args=None):
@@ -46,6 +53,7 @@ class Appr(object):
         self.o_lr = o_lr
         self.o_lr_a = o_lr_a
         self.o_lamb = o_lamb
+        self.o_size = o_size
         # the hyper parameters in training stage
         self.epochs = epochs
         self.batch = batch
@@ -72,6 +80,7 @@ class Appr(object):
             self.o_lr = args.o_lr
             self.o_lr_a = args.o_lr_a
             self.o_lamb = args.o_lamb
+            self.o_size = args.o_size
             # the hyper parameters in training stage
             self.epochs = args.epochs
             self.batch = args.batch
@@ -118,6 +127,9 @@ class Appr(object):
             # 1.2.3 search the best expand action, the best action, and the best architecture
             self.search_t(t, train_data, valid_data, self.o_batch, self.o_epochs, device=device)
             best_archi = self.model.select(t)
+            print("best_archi is {}".format(best_archi))
+            self.writer.add_text("Archi for task {}".format(t),
+                                "{}".format(best_archi))
             self.archis.append(best_archi)
             self.writer.add_text("ModelSize/Task_{}".format(t),
                                  "model size = {}".format(utils.get_model_size(self.model)))
@@ -204,7 +216,7 @@ class Appr(object):
         self.auto_ml = AutoSearch(self.search_layers, self.taskcla[t][1], self.input_size,
                                   device=self.device, writer=self.writer, exp_name=self.exp_name, args=self.args)
         genotype = deepcopy(self.auto_ml.search(t, train_data, valid_data, batch_size, nepochs))
-        # genotype = mdenas_mixture
+
         if t == 0:
             self.model = Network(self.input_size, self.taskcla, self.eval_layers, 36, genotype, device).to(device)
             self.archis.append(self.model.arch_init)
@@ -240,7 +252,10 @@ class Appr(object):
             num_workers=4, pin_memory=True)
 
         h_e = [torch.full(pro.size(), 0, dtype=torch.long) for pro in self.model.p]
-        h_a = [torch.full(pro.size(), 0.0, dtype=torch.long) for pro in self.model.p]
+        h_a = [torch.full(pro.size(), 0.0, dtype=torch.float) for pro in self.model.p]
+        
+        for k in range(len(h_e)):
+            h_e[k][0:-1] = self.o_size
 
         # 3 search the best model architecture
         for e in range(epochs):
@@ -250,12 +265,15 @@ class Appr(object):
                                           pro, global_step=e)
             # 3.1 sample
             selected_ops = [torch.multinomial(pro, 1).item() for pro in self.model.p]
-            print("Selected ops: {}".format(selected_ops))
+            # print("Selected ops: {}".format(selected_ops))
+            self.writer.add_text("Selected ops for task {}".format(t),
+                                "{}".format(selected_ops))
+
             # 3.2 train
             train_loss, train_acc = self.search_epoch(t, train_loader, selected_ops, device)
-            print('train_acc: {}'.format(train_acc))
+            # print('train_acc: {}'.format(train_acc))
             valid_loss, valid_acc = self.search_eval(t, valid_loader, selected_ops, device)
-            print('valid_acc: {}'.format(valid_acc))
+            # print('valid_acc: {}'.format(valid_acc))
             # logging
             self.writer.add_scalars('Search_Loss/Task: {}'.format(t),
                                     {'train_loss': train_loss, 'valid_loss': valid_loss},
@@ -267,17 +285,27 @@ class Appr(object):
             for i, idx in enumerate(selected_ops):
                 h_e[i][idx] += 1
                 h_a[i][idx] = valid_acc
+                # print("layer {}".format(i).center(50, "*"))
+                # print("h_e in layer {}".format(i).center(50, "*"))
+                # print(h_e[i])
+                # print("h_a in layer {}".format(i).center(50, "*"))
+                # print(h_a[i])
 
             # 3.4 update the probability
             for k in range(len(self.model.p)):
                 dh_e_k = torch.reshape(h_e[k], (1, -1)) - torch.reshape(h_e[k], (-1, 1))
                 dh_a_k = torch.reshape(h_a[k], (1, -1)) - torch.reshape(h_a[k], (-1, 1))
 
-                vector1 = torch.sum((dh_e_k < 0) * (dh_a_k > 0), dim=1)
-                print("vector1: {}".format(vector1))
-                vector2 = torch.sum((dh_e_k > 0) * (dh_a_k < 0), dim=1)
-                print("vector2: {}".format(vector2))
+                # modify
+                # vector1 = torch.sum((dh_e_k < 0) * (dh_a_k > 0), dim=1)
+                vector1 = torch.sum((dh_e_k < 0) * (dh_a_k > 0), dim=0)
+                # vector1[-1] /= self.o_size
+                # print("vector1: {}".format(vector1))
+                # vector2 = torch.sum((dh_e_k > 0) * (dh_a_k < 0), dim=1)
+                vector2 = torch.sum((dh_e_k > 0) * (dh_a_k < 0), dim=0)
+                # print("vector2: {}".format(vector2))
                 update = (vector1 - vector2).float()
+                # update[-1] /= self.o_size
                 self.model.p[k] += (self.o_lr_a * update)
                 self.model.p[k] = F.softmax(self.model.p[k])
 
