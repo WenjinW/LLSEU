@@ -1,10 +1,3 @@
-"""
-File        :
-Description :the basic model for darts
-Author      :Wang Wenjin
-Date        :2019/8/14
-Version     :v1.0
-"""
 import torch
 import torch.nn as nn
 import torch.nn.functional as F

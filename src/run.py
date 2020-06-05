@@ -145,10 +145,8 @@ else:
 
 # Load date
 print('Load data...')
-if args.location == 'polyaxon':
-    data, taskcla, inputsize = dataloader.get(path='/plx-data/wjwang/', seed=args.seed)
-else:
-    data, taskcla, inputsize = dataloader.get(path='../dat/', seed=args.seed)
+
+data, taskcla, inputsize = dataloader.get(path='../dat/', seed=args.seed)
 print('Input size =', inputsize, '\nTask info =', taskcla)
 logger.info('Input size =', inputsize, '\nTask info =', taskcla)
 
@@ -247,7 +245,6 @@ for t, ncla in taskcla:
         test_loss, test_acc = appr.eval(u, test_loader, mode='train', device=device)
         print('>>> Test on task {:2d} - {:15s}: loss={:.3f}, acc={:5.1f}% <<<'.format(
             u, data[u]['name'], test_loss, 100*test_acc))
-        # experiment.log_metrics(task=u, step=t, test_loss=test_loss, test_acc=test_acc)
         writer.add_scalars('Test/Loss',
                            {'task{}'.format(u): test_loss}, global_step=t)
         writer.add_scalars('Test/Accuracy',
@@ -260,11 +257,6 @@ for t, ncla in taskcla:
     writer.add_scalars('ModelParameter(M)',
                        {'ModelParameter(M)': utils.get_model_size(appr.model, 'M')},
                        global_step=t)
-    # Save
-    # if args.location == 'polyaxon':
-    #     np.savetxt("/"+output_path+"/"+exp_name+'.txt', acc, '%.4f')
-    # else:
-    #     np.savetxt("../res/" + exp_name + '.txt', acc, '%.4f')
 
 # Done, logging the experiment results
 print('*'*100)

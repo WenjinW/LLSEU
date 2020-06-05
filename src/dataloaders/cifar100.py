@@ -10,8 +10,7 @@ def get(path, seed=0, pc_valid=0.10):
     data = {}
     taskcla = []
     size = [3, 32, 32]
-    # data_path = '/plx-data/wjwang/'
-    # data_path = '../dat/'
+
     data_path = path
 
     if not os.path.isdir(data_path+'binary_cifar/'):
@@ -103,12 +102,6 @@ def get(path, seed=0, pc_valid=0.10):
     task_p = []
     for t in data.keys():
         taskcla.append((t, data[t]['ncla']))
-        # if data[t]['ncla'] == 2:
-        #     # for cifar 10
-        #     task_p.append({'lr': 0.005, 'lamb_w': 0.2})
-        # else:
-        #     # todo: for cifar 100
-        #     task_p.append({'lr': 0, "lamb_w": 0})
         n += data[t]['ncla']
 
     data['ncla'] = n

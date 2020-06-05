@@ -1,10 +1,3 @@
-"""
-File        :
-Description :search model architecture by darts
-Author      :Wang Wenjin
-Date        :2019/8/16
-Version     :v1.0
-"""
 import os
 import sys
 import time

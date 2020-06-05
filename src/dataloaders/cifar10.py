@@ -10,8 +10,7 @@ def get(path, seed=0, pc_valid=0.10):
     data = {}
     taskcla = []
     size = [3, 32, 32]
-    # data_path = '/plx-data/wjwang/'
-    # data_path = '../dat/'
+
     data_path = path
 
     if not os.path.isdir(data_path+'binary_cifar/'):

@@ -1,10 +1,3 @@
-"""
-File        :
-Description :
-Author      :Wang Wenjin
-Date        :2019/8/15
-Version     :v1.0
-"""
 from collections import namedtuple
 
 Genotype = namedtuple('Genotype', 'normal normal_concat reduce reduce_concat')

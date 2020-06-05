@@ -70,9 +70,6 @@ def get(path, seed=0, fixed_order=False, pc_valid=0.1):
 
     # Validation
     for t in data.keys():
-        # data[t]['valid'] = {}
-        # data[t]['valid']['x'] = data[t]['train']['x'].clone()
-        # data[t]['valid']['y'] = data[t]['train']['y'].clone()
 
         r = np.arange(data[t]['train']['x'].size(0))
         r = np.array(shuffle(r, random_state=seed), dtype=int)

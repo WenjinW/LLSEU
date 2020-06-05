@@ -1,10 +1,3 @@
-"""
-File        :
-Description :Multinomial distribution for efficient Neural Architecture Search
-Author      :Wang Wenjin
-Date        :2019/9/19
-Version     :v1.0
-"""
 import numpy as np
 import torch
 import logging
