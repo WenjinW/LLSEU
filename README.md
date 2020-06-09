@@ -4,6 +4,9 @@
 - /dat: dataset
 
 ## Command to start experiment
+
+The default is to use the same hyperparameters as in the paper
+
 ### run seu on the split CIFAR10
 ```
 source run_cifar10_seu.sh
