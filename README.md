@@ -5,7 +5,9 @@
 
 ## Experiment Environment
 ```
-conda env create -f requirements.yml
+python 3.7
+PyTorch 1.1
+torchvision 0.3
 ```
 
 ## Command to start experiment
