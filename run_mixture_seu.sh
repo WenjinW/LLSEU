@@ -2,7 +2,7 @@ cd src
 python run.py --mode=search \
             --location=local \
             --seed=0 \
-            --device = 0\
+            --device=3 \
             --experiment=mixture \
             --approach=seu \
             --id=000 \

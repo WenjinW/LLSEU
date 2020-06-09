@@ -3,7 +3,7 @@ python run.py --mode=search \
             --location=local \
             --seed=0 \
             --experiment=pmnist \
-            --device 0 \
+            --device=2 \
             --approach=seu \
             --id=001 \
             --o_size=30  \

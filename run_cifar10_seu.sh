@@ -3,7 +3,7 @@ python run.py --mode=search \
             --location=local \
             --seed=0 \
             --experiment=cifar10 \
-            --device 0 \
+            --device=0 \
             --approach=seu \
             --id=001 \
             --o_size=10  \

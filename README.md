@@ -3,6 +3,11 @@
 - /src: source code
 - /dat: dataset
 
+## Experiment Environment
+```
+conda env create -f requirements.yml
+```
+
 ## Command to start experiment
 
 The default is to use the same hyperparameters as in the paper
